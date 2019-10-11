@@ -8,6 +8,8 @@ module Pronto
   MypyOffence = Struct.new(:path, :line, :type, :message) do
     def self.create_from_output_line(line)
       parts = line.split(':')
+      return nil if parts.length < 4
+      
       new(Pathname.new(parts[0].strip), parts[1].strip.to_i, parts[2].strip, parts[3..-1].join(':'))
     end
 
@@ -46,6 +48,7 @@ module Pronto
       puts "PRONTO:"
       stdout.split("\n")
         .map { |line| MypyOffence.create_from_output_line(line) }
+        .compact
         .map { |o| [patch_line_for_offence(o), o] }
         .reject { |(line, _)| line.nil? }
         .map { |(line, offence)| create_message(line, offence) }
