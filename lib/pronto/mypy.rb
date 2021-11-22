@@ -37,7 +37,7 @@ module Pronto
 
       return [] if file_args.empty?
 
-      stdout, stderr, = Open3.capture3("#{pylint_executable} #{file_args}")
+      stdout, stderr, = Open3.capture3("#{mypy_executable} #{file_args}")
       stderr.strip!
 
       puts "WARN: pronto-mypy:\n\n#{stderr}" unless stderr.empty?
@@ -56,8 +56,8 @@ module Pronto
 
     private
 
-    def pylint_executable
-      'mypy'
+    def mypy_executable
+      'mypy --follow-imports=silent'
     end
 
     def python_patches
